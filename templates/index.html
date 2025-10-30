@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎰 Buckshot Roulette</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e1e1e 0%, #3a0000 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #ff0000;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ff0000;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px #000;
+            font-size: 2.5em;
+        }
+        
+        .inicio-screen, .juego-screen {
+            display: none;
+        }
+        
+        .inicio-screen.active, .juego-screen.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin: 20px 0;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            background: #2a2a2a;
+            color: #fff;
+            outline: none;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 0;
+        }
+        
+        .btn-start {
+            background: #ff0000;
+            color: #fff;
+        }
+        
+        .btn-start:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+        
+        .btn-disparar-bot {
+            background: #ff4444;
+            color: #fff;
+        }
+        
+        .btn-disparar-bot:hover {
+            background: #ff6666;
+        }
+        
+        .btn-disparar-self {
+            background: #ffaa00;
+            color: #fff;
+        }
+        
+        .btn-disparar-self:hover {
+            background: #ffcc00;
+        }
+        
+        .btn-bot-turn {
+            background: #666;
+            color: #fff;
+        }
+        
+        .btn-bot-turn:hover {
+            background: #888;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            background: #2a2a2a;
+            border: 2px solid #ff0000;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff0000;
+        }
+        
+        .mensaje {
+            background: #2a2a2a;
+            border-left: 5px solid #ff0000;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            min-height: 60px;
+            font-size: 16px;
+        }
+        
+        .ranking {
+            margin-top: 30px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .ranking h2 {
+            color: #ff0000;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .ranking-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #1a1a1a;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .btn-reiniciar {
+            background: #00aa00;
+            color: #fff;
+            margin-top: 20px;
+        }
+        
+        .btn-reiniciar:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 BUCKSHOT ROULETTE 🎰</h1>
+        
+        <!-- Pantalla de inicio -->
+        <div class="inicio-screen active">
+            <p style="text-align: center; margin: 20px 0; font-size: 18px;">
+                ¡Bienvenido al juego más peligroso!<br>
+                Tienes 3 vidas. Pierdes si recibes 3 balas reales.
+            </p>
+            <div class="input-group">
+                <input type="text" id="nombre-input" placeholder="Ingresa tu nombre" maxlength="20">
+            </div>
+            <button class="btn-start" onclick="iniciarJuego()">🎮 COMENZAR JUEGO</button>
+        </div>
+        
+        <!-- Pantalla de juego -->
+        <div class="juego-screen">
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">❤️ Tus Vidas</div>
+                    <div class="stat-value" id="vidas-jugador">3</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">🤖 Vidas Bot</div>
+                    <div class="stat-value" id="vidas-bot">3</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">💰 Puntos</div>
+                    <div class="stat-value" id="puntos">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">🔫 Balas Restantes</div>
+                    <div class="stat-value" id="balas">0</div>
+                </div>
+            </div>
+            
+            <div class="mensaje" id="mensaje">
+                Prepárate para jugar...
+            </div>
+            
+            <div id="controles-jugador">
+                <button class="btn-disparar-bot" onclick="disparar('bot')">🎯 Disparar al BOT</button>
+                <button class="btn-disparar-self" onclick="disparar('jugador')">🎲 Dispararte a TI MISMO</button>
+            </div>
+            
+            <div id="controles-bot" style="display: none;">
+                <button class="btn-bot-turn" onclick="turnoBot()">🤖 Turno del Bot (Click para continuar)</button>
+            </div>
+            
+            <button class="btn-reiniciar" onclick="location.reload()">🔄 NUEVA PARTIDA</button>
+            
+            <div class="ranking" id="ranking-section" style="display: none;">
+                <h2>🏆 RANKING TOP 10</h2>
+                <div id="ranking-lista"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let turnoJugador = true;
+        
+        async function iniciarJuego() {
+            const nombre = document.getElementById('nombre-input').value.trim() || 'Jugador';
+            
+            const response = await fetch('/iniciar_juego', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({nombre})
+            });
+            
+            const data = await response.json();
+            
+            document.querySelector('.inicio-screen').classList.remove('active');
+            document.querySelector('.juego-screen').classList.add('active');
+            
+            actualizarUI(data);
+            document.getElementById('mensaje').textContent = data.mensaje;
+        }
+        
+        async function disparar(objetivo) {
+            const response = await fetch('/disparar', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({objetivo})
+            });
+            
+            const data = await response.json();
+            
+            if (data.recarga) {
+                document.getElementById('mensaje').textContent = data.mensaje;
+                actualizarUI(data);
+                return;
+            }
+            
+            actualizarUI(data);
+            document.getElementById('mensaje').textContent = data.mensaje;
+            
+            if (data.game_over) {
+                mostrarGameOver();
+                return;
+            }
+            
+            if (data.cambiar_turno) {
+                document.getElementById('controles-jugador').style.display = 'none';
+                document.getElementById('controles-bot').style.display = 'block';
+            }
+        }
+        
+        async function turnoBot() {
+            const response = await fetch('/turno_bot', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            });
+            
+            const data = await response.json();
+            
+            actualizarUI(data);
+            document.getElementById('mensaje').textContent = data.mensaje;
+            
+            if (data.game_over) {
+                mostrarGameOver();
+                return;
+            }
+            
+            if (data.cambiar_turno) {
+                document.getElementById('controles-bot').style.display = 'none';
+                document.getElementById('controles-jugador').style.display = 'block';
+            }
+        }
+        
+        function actualizarUI(data) {
+            document.getElementById('vidas-jugador').textContent = data.vidas_jugador;
+            document.getElementById('vidas-bot').textContent = data.vidas_bot;
+            document.getElementById('puntos').textContent = data.puntos;
+            document.getElementById('balas').textContent = data.balas_restantes;
+        }
+        
+        async function mostrarGameOver() {
+            document.getElementById('controles-jugador').style.display = 'none';
+            document.getElementById('controles-bot').style.display = 'none';
+            document.getElementById('mensaje').innerHTML = '<strong>💀 GAME OVER 💀</strong><br>Has perdido todas tus vidas';
+            
+            const response = await fetch('/ranking');
+            const data = await response.json();
+            
+            const rankingSection = document.getElementById('ranking-section');
+            const rankingLista = document.getElementById('ranking-lista');
+            
+            rankingLista.innerHTML = '';
+            data.ranking.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'ranking-item';
+                div.innerHTML = `<span>${index + 1}. ${item[0]}</span><span>${item[1]} pts</span>`;
+                rankingLista.appendChild(div);
+            });
+            
+            rankingSection.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
