@@ -1,0 +1,24 @@
+# Environment
+venv/
+env/
+.env
+*.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Cache
+puntuaciones_temp.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
