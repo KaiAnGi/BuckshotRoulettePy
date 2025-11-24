@@ -52,20 +52,38 @@ class BuckshotRouletteGame:
             return False
     
     def disparar(self, objetivo):
-        """Realizar disparo"""
+        """Realizar disparo con validaciones"""
+
+        print(f"Disparando con session_id: {self.api_client.session_id} y objetivo: {objetivo}")
+    
+        # Validar que el objetivo sea válido
+        if objetivo not in ("bot", "jugador"):
+            print(f"❌ Objetivo inválido para disparar: {objetivo}")
+            return {'error': True, 'mensaje': 'Objetivo inválido'}
+    
+    # Validar que haya sesión activa válida
+        if not self.api_client.session_id:
+            print("❌ No hay sesión activa para disparar")
+            return {'error': True, 'mensaje': 'Sin sesión activa'}
+    
+    # Opcional: puedes hacer una verificación adicional si quieres que session_id no sea vacío
+        if not isinstance(self.api_client.session_id, str) or self.api_client.session_id.strip() == "":
+            print("❌ session_id inválido")
+            return {'error': True, 'mensaje': 'session_id inválido'}
+    
+    # Llamar a la API para disparar
         resultado = self.api_client.disparar(objetivo)
-        
+
         if resultado and not resultado.get('error'):
             self.datos_juego.update(resultado)
             self.pantallas["juego"].actualizar_datos(resultado)
-            
+        
             # Game over
             if resultado.get('game_over'):
                 self.pantalla_actual = "ranking"
                 self.cargar_ranking()
-            
+        
             return resultado
-        return None
     
     def turno_bot(self):
         """Ejecutar turno del bot"""

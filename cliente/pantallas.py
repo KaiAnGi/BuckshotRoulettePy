@@ -90,7 +90,7 @@ class PantallaInicio:
         self.input_box = InputBox(200, 300, 400, 50, "Ingresa tu nombre")
         
         # Botón iniciar
-        self.btn_iniciar = Button(250, 400, 300, 60, "🎮 COMENZAR", 
+        self.btn_iniciar = Button(250, 400, 300, 60, "COMENZAR", 
                                    (200, 0, 0), (255, 0, 0))
     
     def render(self, events):
@@ -156,11 +156,11 @@ class PantallaJuego:
         self.turno_jugador = True
         
         # Botones
-        self.btn_disparar_bot = Button(150, 400, 500, 60, "🎯 Disparar al BOT",
+        self.btn_disparar_bot = Button(150, 400, 500, 60, "Disparar al BOT",
                                         (180, 50, 50), (220, 70, 70))
-        self.btn_disparar_self = Button(150, 480, 500, 60, "🎲 Dispararte a TI",
+        self.btn_disparar_self = Button(150, 480, 500, 60, "Dispararte a TI",
                                          (180, 120, 0), (220, 150, 0))
-        self.btn_turno_bot = Button(150, 440, 500, 60, "🤖 Turno del Bot",
+        self.btn_turno_bot = Button(150, 440, 500, 60, "Turno del Bot",
                                      (100, 100, 100), (150, 150, 150))
     
     def actualizar_datos(self, datos):
@@ -191,15 +191,15 @@ class PantallaJuego:
         self.screen.fill((20, 20, 20))
         
         # Título
-        titulo = pygame.font.Font(None, 48).render("🎰 BUCKSHOT ROULETTE", True, (255, 0, 0))
+        titulo = pygame.font.Font(None, 48).render("BUCKSHOT ROULETTE", True, (255, 0, 0))
         titulo_rect = titulo.get_rect(center=(self.width // 2, 40))
         self.screen.blit(titulo, titulo_rect)
         
         # Stats
-        self.dibujar_stat_box(50, 90, "❤️ Tus Vidas", self.vidas_jugador)
-        self.dibujar_stat_box(240, 90, "🤖 Vidas Bot", self.vidas_bot)
-        self.dibujar_stat_box(430, 90, "💰 Puntos", self.puntos, (0, 200, 0))
-        self.dibujar_stat_box(50, 210, "🔫 Balas", self.balas_restantes, (255, 150, 0))
+        self.dibujar_stat_box(50, 90, "Tus Vidas", self.vidas_jugador)
+        self.dibujar_stat_box(240, 90, "Vidas Bot", self.vidas_bot)
+        self.dibujar_stat_box(430, 90, "Puntos", self.puntos, (0, 200, 0))
+        self.dibujar_stat_box(50, 210, "Balas", self.balas_restantes, (255, 150, 0))
         
         # Mensaje
         mensaje_rect = pygame.Rect(50, 330, 700, 50)
@@ -266,7 +266,7 @@ class PantallaRanking:
         self.nombre_jugador = ""
         
         # Botones
-        self.btn_reiniciar = Button(250, 520, 300, 50, "🔄 NUEVA PARTIDA",
+        self.btn_reiniciar = Button(250, 520, 300, 50, "NUEVA PARTIDA",
                                      (0, 150, 0), (0, 200, 0))
     
     def actualizar_ranking(self, ranking, puntos, nombre):
@@ -280,7 +280,7 @@ class PantallaRanking:
         self.screen.fill((20, 20, 20))
         
         # Título
-        titulo = self.font_titulo.render("💀 GAME OVER 💀", True, (255, 0, 0))
+        titulo = self.font_titulo.render("GAME OVER", True, (255, 0, 0))
         titulo_rect = titulo.get_rect(center=(self.width // 2, 50))
         self.screen.blit(titulo, titulo_rect)
         
@@ -291,7 +291,7 @@ class PantallaRanking:
         self.screen.blit(tu_score, tu_score_rect)
         
         # Título ranking
-        ranking_titulo = pygame.font.Font(None, 36).render("🏆 TOP 10 GLOBAL", True, (255, 200, 0))
+        ranking_titulo = pygame.font.Font(None, 36).render("TOP 10 GLOBAL", True, (255, 200, 0))
         ranking_titulo_rect = ranking_titulo.get_rect(center=(self.width // 2, 160))
         self.screen.blit(ranking_titulo, ranking_titulo_rect)
         

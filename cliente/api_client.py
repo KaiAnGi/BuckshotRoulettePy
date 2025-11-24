@@ -135,7 +135,7 @@ class APIClient:
         except Exception as e:
             print(f"❌ Error al sincronizar cache: {e}")
     
-    # ========== ENDPOINTS DEL JUEGO ==========
+      # ========== ENDPOINTS DEL JUEGO ==========
     
     def iniciar_juego(self, nombre):
         """
@@ -144,6 +144,47 @@ class APIClient:
         """
         datos = {'nombre': nombre}
         resultado = self._reintentar_peticion('iniciar_juego', 'POST', datos)
-        
+    
         if not resultado.get('error'):
             self.session_id = resultado.get('session_id')
+    
+            return resultado
+
+    def disparar(self, objetivo):
+        """
+        POST /api/disparar
+        Realizar disparo
+        """
+        if not self.session_id:
+            return {'error': True, 'mensaje': 'Sin sesión activa'}
+        
+        datos = {
+            'session_id': self.session_id,
+            'objetivo': objetivo
+        }
+        return self._reintentar_peticion('disparar', 'POST', datos)
+    
+    def turno_bot(self):
+        """
+        POST /api/turno_bot
+        Ejecutar turno del bot
+        """
+        if not self.session_id:
+            return {'error': True, 'mensaje': 'Sin sesión activa'}
+        
+        datos = {'session_id': self.session_id}
+        return self._reintentar_peticion('turno_bot', 'POST', datos)
+    
+    def obtener_ranking(self, limite=10):
+        """
+        GET /api/ranking
+        Obtener ranking global
+        """
+        return self._reintentar_peticion(f'ranking?limite={limite}', 'GET')
+    
+    def obtener_estadisticas(self):
+        """
+        GET /api/estadisticas
+        Obtener estadísticas globales
+        """
+        return self._reintentar_peticion('estadisticas', 'GET')
