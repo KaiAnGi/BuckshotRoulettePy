@@ -67,21 +67,11 @@ def health_check():
 
 @app.route('/api/iniciar_juego', methods=['POST'])
 def iniciar_juego():
-    """
-    POST /api/iniciar_juego
-    Body: {"nombre": "Jugador"}
-    """
     try:
         data = request.get_json()
         nombre = data.get('nombre', 'Jugador')
-        
-        # Generar sesión
         session_id = game.generar_session_id()
-        
-        # Cargar escopeta
         escopeta, num_reales, num_fogueo = game.cargar_escopeta()
-        
-        # Guardar sesión
         sesiones[session_id] = {
             'nombre': nombre,
             'vidas_jugador': config.MAX_VIDAS,
@@ -91,13 +81,10 @@ def iniciar_juego():
             'turno_jugador': True,
             'balas_disparadas': 0
         }
-        
-        # Registrar en BD
         SesionJuego.crear(session_id, nombre)
-        
         logger.info(f"🎮 Juego iniciado: {nombre} (session: {session_id[:8]}...)")
-        
         return jsonify({
+            'error': False,  # <<--- AÑADE ESTO
             'success': True,
             'session_id': session_id,
             'mensaje': f'Escopeta cargada: {num_reales} reales, {num_fogueo} fogueo',
@@ -107,7 +94,6 @@ def iniciar_juego():
             'balas_restantes': len(escopeta),
             'turno_jugador': True
         }), 200
-    
     except Exception as e:
         logger.error(f"❌ Error en iniciar_juego: {e}")
         return jsonify({'error': True, 'mensaje': str(e)}), 500
@@ -115,14 +101,14 @@ def iniciar_juego():
 
 @app.route('/api/disparar', methods=['POST'])
 def disparar():
-    """
-    POST /api/disparar
-    Body: {"session_id": "...", "objetivo": "bot" | "jugador"}
-    """
     try:
         data = request.get_json()
         session_id = data.get('session_id')
         objetivo = data.get('objetivo')
+        
+        print("Datos de session_id", session_id)
+        print("Datos de objetivo", objetivo)
+        print("Datos de sesiones", sesiones.keys())  # solo claves para no saturar logs
         
         # Validar sesión
         if session_id not in sesiones:
@@ -132,11 +118,20 @@ def disparar():
         
         # Verificar turno
         if not sesion['turno_jugador']:
-            return jsonify({'error': True, 'mensaje': 'No es tu turno'}), 400
+            # En lugar de error 400, devolver estado para sincronizar cliente
+            return jsonify({
+                'error': True,
+                'mensaje': 'No es tu turno',
+                'turno_jugador': sesion['turno_jugador'],
+                'vidas_jugador': sesion['vidas_jugador'],
+                'vidas_bot': sesion['vidas_bot'],
+                'puntos': sesion['puntos'],
+                'balas_restantes': len(sesion.get('escopeta', [])),
+                'game_over': False
+            }), 200
         
         # Verificar si hay balas
         if not sesion['escopeta']:
-            # Recargar escopeta
             escopeta, num_reales, num_fogueo = game.cargar_escopeta()
             sesion['escopeta'] = escopeta
             
@@ -150,14 +145,11 @@ def disparar():
                 'turno_jugador': sesion['turno_jugador']
             }), 200
         
-        # Extraer bala
         bala = sesion['escopeta'].pop(0)
         sesion['balas_disparadas'] += 1
         
-        # Procesar disparo
         resultado = game.procesar_disparo(bala, objetivo, True)
         
-        # Actualizar estado
         if objetivo == 'bot' and resultado['dano'] > 0:
             sesion['vidas_bot'] -= resultado['dano']
         elif objetivo == 'jugador' and resultado['dano'] > 0:
@@ -168,15 +160,11 @@ def disparar():
         if resultado['cambiar_turno']:
             sesion['turno_jugador'] = False
         
-        # Verificar game over
         game_over = sesion['vidas_jugador'] <= 0 or sesion['vidas_bot'] <= 0
         
         if game_over:
-            # Guardar puntuación
             Puntuacion.guardar(sesion['nombre'], sesion['puntos'], session_id)
             SesionJuego.finalizar(session_id, sesion['puntos'], sesion['balas_disparadas'])
-            
-            # Limpiar sesión
             del sesiones[session_id]
             
             if sesion['vidas_bot'] <= 0:
