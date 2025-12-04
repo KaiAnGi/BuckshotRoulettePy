@@ -1,0 +1,110 @@
+# ========================LISTA DE COMANDOS PARA LOS VAGOS ==========================
+sudo apt update
+sudo apt upgrade -y
+
+# Verificar versión de Python (debe ser 3.8+)
+python3 --version
+
+# Instalar pip y venv si no están instalados
+sudo apt install python3-pip python3-venv -y
+
+# Instalar dependencias del sistema para Pygame
+sudo apt install python3-dev libsdl2-dev libsdl2-image-dev \
+    libsdl2-mixer-dev libsdl2-ttf-dev libfreetype6-dev \
+    libjpeg-dev libportmidi-dev -y
+
+# Instalar PostgreSQL y herramientas
+sudo apt install postgresql postgresql-contrib -y
+
+# Verificar que está corriendo
+sudo systemctl status postgresql
+
+# Si no está corriendo, iniciarlo
+sudo systemctl start postgresql
+sudo systemctl enable postgresql
+
+# Desde la raíz del proyecto
+cd ~/buckshot-roulette
+
+# Crear entorno virtual
+python3 -m venv venv
+
+# Activar entorno virtual
+source venv/bin/activate
+
+# Ahora tu prompt debe verse así:
+# (venv) usuario@pc:~/buckshot-roulette$
+# IMPORTANTE: Asegurarte de estar en el venv
+# Debes ver (venv) en el prompt
+
+# Actualizar pip primero
+pip install --upgrade pip
+
+# Instalar todas las dependencias
+pip install -r requirements.txt
+
+# Esto instalará:
+# - Flask y extensiones
+# - PostgreSQL driver (psycopg2-binary)
+# - Pygame
+# - Requests
+# - Y todo lo demás
+
+# Con el venv activado
+cd servidor/
+
+# 1. Probar conexión a PostgreSQL
+python test_connection.py
+
+# Deberías ver:
+# ✅ TODAS LAS PRUEBAS PASARON CORRECTAMENTE
+
+# 2. Inicializar tablas de la base de datos
+python init_db.py
+
+# Deberías ver:
+# ✅ Base de datos inicializada correctamente
+# 📊 Tablas creadas: puntuaciones, sesiones_juego
+
+# Activar venv
+cd ~/buckshot-roulette
+source venv/bin/activate
+
+# Ir a servidor y ejecutar
+cd servidor/
+python app.py
+
+# Deberías ver:
+# ✅ Base de datos conectada correctamente
+# * Running on http://0.0.0.0:5000
+# Archivos de entorno virtual
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Archivos de configuración
+.env
+*.log
+
+# Archivos del sistema
+.DS_Store
+
+# Nueva terminal
+cd ~/buckshot-roulette
+source venv/bin/activate
+
+# Configurar URL de la API (opcional, por defecto usa localhost)
+export API_URL=http://localhost:5000/api
+
+# Ejecutar cliente
+cd cliente/
+python main.py
+
+# Se debería abrir la ventana de Pygame
+
+# Abrir en tu navegador:
+firefox http://localhost:5000
+# o
+google-chrome http://localhost:5000
+
