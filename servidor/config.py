@@ -15,7 +15,6 @@ class Config:
     # Database
     DATABASE_URL = os.getenv('DATABASE_URL', 'postgresql://localhost/buckshot_roulette')
     
-    # Si usas Heroku/Railway, convierten postgres:// a postgresql://
     if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
         DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
     
@@ -49,7 +48,6 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Configuración para producción"""
     DEBUG = False
-    # En producción, DATABASE_URL debe venir de variable de entorno
     if not os.getenv('DATABASE_URL'):
         raise ValueError("DATABASE_URL environment variable must be set in production")
 

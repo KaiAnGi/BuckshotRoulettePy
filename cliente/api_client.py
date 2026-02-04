@@ -135,7 +135,7 @@ class APIClient:
         except Exception as e:
             print(f"❌ Error al sincronizar cache: {e}")
     
-      # ========== ENDPOINTS DEL JUEGO ==========
+    # ========== ENDPOINTS DEL JUEGO ==========
     
     def iniciar_juego(self, nombre):
         """

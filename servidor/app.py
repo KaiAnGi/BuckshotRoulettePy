@@ -44,13 +44,11 @@ try:
     models.db = db
     
 except Exception as e:
-    logger.error(f"❌ Error al conectar base de datos: {e}")
+    logger.error(f"Error al conectar base de datos: {e}")
     raise
 
 # Inicializar juego
 game = BuckshotGame(config)
-
-# Almacenamiento temporal de sesiones (en producción usar Redis)
 sesiones = {}
 
 
@@ -83,9 +81,9 @@ def iniciar_juego():
             'balas_disparadas': 0
         }
         SesionJuego.crear(session_id, nombre)
-        logger.info(f"🎮 Juego iniciado: {nombre} (session: {session_id[:8]}...)")
+        logger.info(f"Juego iniciado: {nombre} (session: {session_id[:8]}...)")
         return jsonify({
-            'error': False,  # <<--- AÑADE ESTO
+            'error': False,
             'success': True,
             'session_id': session_id,
             'mensaje': f'Escopeta cargada: {num_reales} reales, {num_fogueo} fogueo',
@@ -96,7 +94,7 @@ def iniciar_juego():
             'turno_jugador': True
         }), 200
     except Exception as e:
-        logger.error(f"❌ Error en iniciar_juego: {e}")
+        logger.error(f"Error en iniciar_juego: {e}")
         return jsonify({'error': True, 'mensaje': str(e)}), 500
 
 
@@ -109,7 +107,7 @@ def disparar():
         
         print("Datos de session_id", session_id)
         print("Datos de objetivo", objetivo)
-        print("Datos de sesiones", sesiones.keys())  # solo claves para no saturar logs
+        print("Datos de sesiones", sesiones.keys())
         
         # Validar sesión
         if session_id not in sesiones:
@@ -119,7 +117,6 @@ def disparar():
         
         # Verificar turno
         if not sesion['turno_jugador']:
-            # En lugar de error 400, devolver estado para sincronizar cliente
             return jsonify({
                 'error': True,
                 'mensaje': 'No es tu turno',
@@ -184,7 +181,7 @@ def disparar():
         }), 200
     
     except Exception as e:
-        logger.error(f"❌ Error en disparar: {e}")
+        logger.error(f"Error en disparar: {e}")
         return jsonify({'error': True, 'mensaje': str(e)}), 500
 
 
@@ -269,7 +266,7 @@ def turno_bot():
         }), 200
     
     except Exception as e:
-        logger.error(f"❌ Error en turno_bot: {e}")
+        logger.error(f"Error en turno_bot: {e}")
         return jsonify({'error': True, 'mensaje': str(e)}), 500
 
 
@@ -280,7 +277,7 @@ def obtener_ranking():
     """
     try:
         limite = request.args.get('limite', 10, type=int)
-        limite = min(limite, 100)  # Máximo 100
+        limite = min(limite, 100)
         
         ranking = Puntuacion.obtener_ranking(limite)
         
@@ -291,7 +288,7 @@ def obtener_ranking():
         }), 200
     
     except Exception as e:
-        logger.error(f"❌ Error en obtener_ranking: {e}")
+        logger.error(f"Error en obtener_ranking: {e}")
         return jsonify({'error': True, 'mensaje': str(e)}), 500
 
 
@@ -306,7 +303,7 @@ def obtener_estadisticas():
         }), 200
     
     except Exception as e:
-        logger.error(f"❌ Error en obtener_estadisticas: {e}")
+        logger.error(f"Error en obtener_estadisticas: {e}")
         return jsonify({'error': True, 'mensaje': str(e)}), 500
 
 # ============== PÁGINA WEB RANKING ==============

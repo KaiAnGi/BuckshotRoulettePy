@@ -28,12 +28,12 @@ class Database:
             )
             
             if self.connection_pool:
-                logger.info(f"✅ Connection pool creado: {self.config.DB_POOL_MIN}-{self.config.DB_POOL_MAX} conexiones")
+                logger.info(f"Connection pool creado: {self.config.DB_POOL_MIN}-{self.config.DB_POOL_MAX} conexiones")
             else:
                 raise Exception("No se pudo crear el connection pool")
         
         except (Exception, psycopg2.DatabaseError) as error:
-            logger.error(f"❌ Error al crear connection pool: {error}")
+            logger.error(f"Error al crear connection pool: {error}")
             raise
     
     @contextmanager
@@ -53,7 +53,7 @@ class Database:
         except Exception as e:
             if connection:
                 connection.rollback()
-            logger.error(f"❌ Error en transacción: {e}")
+            logger.error(f"Error en transacción: {e}")
             raise
         finally:
             if connection:
@@ -133,7 +133,6 @@ class Database:
                 ON puntuaciones(fecha DESC)
             """)
             
-            # Tabla de sesiones de juego (opcional, para analytics)
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS sesiones_juego (
                     id SERIAL PRIMARY KEY,
@@ -147,7 +146,7 @@ class Database:
                 )
             """)
             
-            logger.info("✅ Base de datos inicializada correctamente")
+            logger.info("Base de datos inicializada correctamente")
 
 
 # Instancia global (se inicializa en app.py)

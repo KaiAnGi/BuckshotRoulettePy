@@ -60,19 +60,19 @@ class BuckshotGame:
                 if bala == 1:
                     resultado['dano'] = 1
                     resultado['puntos_ganados'] = self.config.PUNTOS_BALA_REAL
-                    resultado['mensaje'] = "💥 ¡BANG! Bala REAL al bot"
+                    resultado['mensaje'] = "¡BANG! Bala REAL al bot"
                 else:
-                    resultado['mensaje'] = "✨ Click - Fogueo al bot"
+                    resultado['mensaje'] = "Click - Fogueo al bot"
                 resultado['cambiar_turno'] = True
             
             else:  # jugador se dispara a sí mismo
                 if bala == 1:
                     resultado['dano'] = 1
-                    resultado['mensaje'] = "💀 ¡BANG! Te disparaste con bala REAL"
+                    resultado['mensaje'] = "¡BANG! Te disparaste con bala REAL"
                     resultado['cambiar_turno'] = True
                 else:
                     resultado['puntos_ganados'] = self.config.PUNTOS_FOGUEO_SELF
-                    resultado['mensaje'] = "🎲 Fogueo - Sigues jugando"
+                    resultado['mensaje'] = "Fogueo - Sigues jugando"
                     resultado['cambiar_turno'] = False
         
         else:  # turno del bot
@@ -85,16 +85,16 @@ class BuckshotGame:
             if objetivo == 'jugador':
                 if bala == 1:
                     resultado['dano'] = 1
-                    resultado['mensaje'] = "🤖 El bot te disparó con bala REAL"
+                    resultado['mensaje'] = "El bot te disparó con bala REAL"
                 else:
-                    resultado['mensaje'] = "🤖 El bot te disparó - Fogueo"
+                    resultado['mensaje'] = "El bot te disparó - Fogueo"
                 resultado['cambiar_turno'] = True
             else:
                 if bala == 1:
                     resultado['dano'] = -1  # Daño al bot
-                    resultado['mensaje'] = "🤖 El bot se disparó con bala REAL"
+                    resultado['mensaje'] = "El bot se disparó con bala REAL"
                 else:
-                    resultado['mensaje'] = "🤖 El bot se disparó - Fogueo, sigue"
+                    resultado['mensaje'] = "El bot se disparó - Fogueo, sigue"
                     resultado['cambiar_turno'] = False
         
         return resultado
@@ -119,13 +119,13 @@ class Puntuacion:
             result = db.execute_one(query, params)
             
             if result:
-                logger.info(f"💾 Puntuación guardada: {nombre} - {puntos} pts")
+                logger.info(f"Puntuación guardada: {nombre} - {puntos} pts")
                 return result[0]
             
             return None
         
         except Exception as e:
-            logger.error(f"❌ Error al guardar puntuación: {e}")
+            logger.error(f"Error al guardar puntuación: {e}")
             raise
     
     @staticmethod
@@ -156,7 +156,7 @@ class Puntuacion:
             return ranking
         
         except Exception as e:
-            logger.error(f"❌ Error al obtener ranking: {e}")
+            logger.error(f"Error al obtener ranking: {e}")
             raise
     
     @staticmethod
@@ -197,7 +197,7 @@ class Puntuacion:
             return ranking
         
         except Exception as e:
-            logger.error(f"❌ Error al obtener ranking por fecha: {e}")
+            logger.error(f"Error al obtener ranking por fecha: {e}")
             raise
     
     @staticmethod
@@ -228,7 +228,7 @@ class Puntuacion:
             return None
         
         except Exception as e:
-            logger.error(f"❌ Error al obtener estadísticas: {e}")
+            logger.error(f"Error al obtener estadísticas: {e}")
             raise
 
 
@@ -249,7 +249,7 @@ class SesionJuego:
             return result[0] if result else None
         
         except Exception as e:
-            logger.error(f"❌ Error al crear sesión: {e}")
+            logger.error(f"Error al crear sesión: {e}")
             raise
     
     @staticmethod
@@ -268,5 +268,5 @@ class SesionJuego:
             )
         
         except Exception as e:
-            logger.error(f"❌ Error al finalizar sesión: {e}")
+            logger.error(f"Error al finalizar sesión: {e}")
             raise
